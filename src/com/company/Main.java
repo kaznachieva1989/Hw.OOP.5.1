@@ -11,10 +11,13 @@ public class Main {
         synchronized (uploader) {
             uploader.wait();
         }
+        CountDownLatch countDownLatch = new CountDownLatch(10);
         Semaphore sem = new Semaphore(3, true);
         for (int i = 1; i <= 10; i++) {
-            new Downloaders(sem, i).start();
+            new Downloaders(sem, i, countDownLatch).start();
         }
+        countDownLatch.await();
+        System.out.println("Файл удален из сервера");
     }
 }
 
